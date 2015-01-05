@@ -6,48 +6,44 @@ Board::Board(){
 }
 
 Board::Board(const unsigned sizeHoriz, const unsigned sizeVert, const unsigned numMines, const unsigned seed){
-    this->sizeVert  = sizeVert;
-    this->sizeHoriz = sizeHoriz;
-    boardContents = new bool*[sizeVert];
-    boardDisplay  = new char*[sizeVert];
-    boardState    = new CELL_STATE*[sizeVert];
+    this->sizeVert   = sizeVert;
+    this->sizeHoriz  = sizeHoriz;
+    this->startMines = numMines;
+    this->remMines   = this->startMines;
+    (void)seed;
+    theBoard = new Cell*[sizeVert];
     for(unsigned row = 0 ; row < sizeVert ; row++){
-        boardContents[row] = new bool[sizeHoriz];
-        boardDisplay[row]  = new char[sizeHoriz];
-        boardState[row]    = new CELL_STATE[sizeHoriz];
+        theBoard[row] = new Cell[sizeHoriz];
     }
+    // TODO: Generate random mines
 
     for(unsigned row = 0 ; row < sizeVert ; row++){
         for(unsigned col = 0 ; col < sizeHoriz ; col++){
-            boardContents[row][col] = false;
-            boardDisplay[row][col]  = UNOPENED_GFX;
-            boardState[row][col]    = CLOSED;
+            // Set cell based on whether a mine or not
+            theBoard[row][col].setContents(false, 0);
         }
     }
-    boardContents[0][0] = true;
 }
 
 Board::~Board(){
     for(unsigned row = 0 ; row < sizeVert ; row++){
-        delete[] boardContents[row];
-        delete[] boardDisplay[row];
-        delete[] boardState[row];
+        delete[] theBoard[row];
     }
-    delete[] boardContents;
-    delete[] boardDisplay;
-    delete[] boardState;
+    delete[] theBoard;
 }
 
 bool Board::openCell(const char x, const int y){
+    // Returns true if the player blew up, else returns false.
     const unsigned row = y;
     const unsigned col = x - 'a';
     validateInput(row, col);
     
-    // TODO: Change boardDisplay
-    boardDisplay[row][col] = boardContents[row][col] ? MINE_GFX : '0';
-    boardState[row][col] = OPEN;
+    if(!theBoard[row][col].canBeOpened())
+        return false;
 
-    return boardContents[row][col];
+    theBoard[row][col].open();
+
+    return theBoard[row][col].isMine();
 }
 
 void Board::flagCell(const char x, const int y){
@@ -55,8 +51,7 @@ void Board::flagCell(const char x, const int y){
     const unsigned col = x - 'a';
     validateInput(row, col);
 
-    boardDisplay[row][col] = FLAGGED_GFX;
-
+    theBoard[row][col].flag(); 
 }
 
 void Board::printBoard(){
@@ -73,14 +68,14 @@ void Board::printBoard(){
         }
         std::cout << row << " ";
         for(unsigned col = 0 ; col < sizeHoriz ; col++){
-            std::cout << (boardState[row][col] == OPEN ? boardDisplay[row][col] : '?') << " ";
+            std::cout << theBoard[row][col].getDisplay() << " ";
         }
         std::cout << "\n";
     }
     std::cout << "\n";
 }
 
-void Board::validateInput(const int row, const int col){
+void Board::validateInput(const unsigned row, const unsigned col){
     if(row > sizeVert || col > sizeHoriz){
         std::cerr << "Error: Out of bounds\n";
         //throw OUT_OF_BOUNDS_EXCEPTION;

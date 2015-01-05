@@ -1,4 +1,5 @@
 #include <vector>
+#include "cell.h"
 
 enum CELL_STATE{OPEN, CLOSED};
 const char UNOPENED_GFX = '?';
@@ -15,18 +16,14 @@ class Board{
         void flagCell(const char x, const int y);
         void printBoard();
     private:
-        CELL_STATE **boardState; // Whether or 
-        bool **boardContents;
-        char **boardDisplay;
+        Cell **theBoard;
 
-        int sizeVert;
-        int sizeHoriz;
-        int startMines;
-        int remMines;
+        unsigned sizeVert;
+        unsigned sizeHoriz;
+        unsigned startMines;
+        unsigned remMines;
 
 
         // Helper functions
-        void validateInput(const int row, const int col);
-
-
+        void validateInput(const unsigned row, const unsigned col);
 };
