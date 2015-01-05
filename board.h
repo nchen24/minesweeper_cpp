@@ -1,8 +1,9 @@
 #include <vector>
 
-enum CELL_STATE{MINE, EMPTY};
-const char EMPTY_GFX = '?';
-const char FLAGGED_GFX = 'x';
+enum CELL_STATE{OPEN, CLOSED};
+const char UNOPENED_GFX = '?';
+const char FLAGGED_GFX  = 'x';
+const char MINE_GFX     = '*';
 
 class Board{
     public:
@@ -10,9 +11,11 @@ class Board{
         Board(const unsigned sizeHoriz, const unsigned sizeVert, const unsigned numMines, const unsigned seed);
         ~Board();
 
-        int openCell(char x, int y);
+        bool openCell(const char x, const int y); 
+        void flagCell(const char x, const int y);
         void printBoard();
     private:
+        CELL_STATE **boardState; // Whether or 
         bool **boardContents;
         char **boardDisplay;
 
@@ -21,7 +24,9 @@ class Board{
         int startMines;
         int remMines;
 
-        //std::vector<std::vector<CELL_STATE> > theBoard;
+
+        // Helper functions
+        void validateInput(const int row, const int col);
 
 
 };
