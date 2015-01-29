@@ -32,11 +32,13 @@ Board::~Board(){
     delete[] theBoard;
 }
 
-bool Board::openCell(const char x, const int y){
+bool Board::openCell(BoardCoordinates play){
     // Returns true if the player blew up, else returns false.
-    const unsigned row = y;
-    const unsigned col = x - 'a';
+    unsigned row = play.row;
+    unsigned col = play.column - (unsigned)'a';
     validateInput(row, col);
+    //if(!validateInput(row, col))
+    //    return false;
     
     if(!theBoard[row][col].canBeOpened())
         return false;

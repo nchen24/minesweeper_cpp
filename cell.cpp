@@ -6,19 +6,29 @@ const char FLAGGED_GFX  = 'x';
 const char MINE_GFX     = '*';
 
 Cell::Cell(){
-    isSet = false;
+    curStatus = CLOSED;
+    mineSet = false;
+    neighborsSet = false;
 }
 
 Cell::Cell(bool isAMine, unsigned neighbors){
-    setContents(isAMine, neighbors);
+    setMine(isAMine);
+    setNeighbors(neighbors);
+    curStatus = CLOSED;
 }
 
-void Cell::setContents(bool isAMine, unsigned neighbors){
-    assert(!isSet);
+void Cell::setMine(bool isAMine){
     this->mine = isAMine;
+    mineSet = true;
+}
+
+void Cell::setNeighbors(unsigned neighbors){
     this->contents = (this->mine ? MINE_GFX : neighbors + '0');
-    curStatus = CLOSED;
-    isSet = true;
+    neighborsSet = true;
+}
+
+bool Cell::isSet(){
+    return mineSet && neighborsSet;
 }
 
 bool Cell::isMine(){
@@ -45,8 +55,8 @@ void Cell::open(){
 
 char Cell::getDisplay(){
     switch(curStatus){
-        case OPEN: return contents;
-        case CLOSED: return UNOPENED_GFX;
+        case OPEN:    return contents;
+        case CLOSED:  return UNOPENED_GFX;
         case FLAGGED: return FLAGGED_GFX;
     }
 }

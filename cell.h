@@ -1,3 +1,5 @@
+#ifndef CELL_H_DEFINED
+#define CELL_H_DEFINED
 
 class Cell{
     enum STATUS {OPEN, CLOSED, FLAGGED};
@@ -5,7 +7,8 @@ class Cell{
     public:
         Cell();
         Cell(bool isAMine, unsigned neighbors);
-        void setContents(bool isAMine, unsigned neighbors);
+        void setMine(bool isAMine);
+        void setNeighbors(unsigned neighbors);
 
         bool isMine();
         bool canBeOpened();
@@ -19,7 +22,12 @@ class Cell{
         bool mine;
         char contents;
 
-        bool isSet;
+
+        bool isSet();
+        bool mineSet;
+        bool neighborsSet;
 
         STATUS curStatus;
 };
+
+#endif
