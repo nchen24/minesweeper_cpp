@@ -1,4 +1,7 @@
+#include <algorithm>
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 #include "board.h"
 
 Board::Board(){
@@ -10,7 +13,8 @@ Board::Board(const unsigned sizeHoriz, const unsigned sizeVert, const unsigned n
     this->sizeHoriz  = sizeHoriz;
     this->startMines = numMines;
     this->remMines   = this->startMines;
-    (void)seed;
+    std::srand(seed);
+
     theBoard = new Cell*[sizeVert];
     for(unsigned row = 0 ; row < sizeVert ; row++){
         theBoard[row] = new Cell[sizeHoriz];
@@ -20,9 +24,12 @@ Board::Board(const unsigned sizeHoriz, const unsigned sizeVert, const unsigned n
     for(unsigned row = 0 ; row < sizeVert ; row++){
         for(unsigned col = 0 ; col < sizeHoriz ; col++){
             // Set cell based on whether a mine or not
-            theBoard[row][col].setContents(false, 0);
+            theBoard[row][col].setMine(false);
+            theBoard[row][col].setNeighbors(0);
         }
     }
+    makeRandomBoard(); 
+    std::cout << "Made board " << this->sizeVert << "x" << this->sizeHoriz << "\n";
 }
 
 Board::~Board(){
@@ -65,10 +72,13 @@ void Board::printBoard(){
     std::cout << "\n";
 
     for(unsigned row = 0 ; row < sizeVert ; row++){
+        // Print the numbers down the side
         if(row < 10 && sizeVert > 9){
             std::cout << " ";
         }
         std::cout << row << " ";
+        
+        // Print the actual board
         for(unsigned col = 0 ; col < sizeHoriz ; col++){
             std::cout << theBoard[row][col].getDisplay() << " ";
         }
@@ -81,5 +91,27 @@ void Board::validateInput(const unsigned row, const unsigned col){
     if(row > sizeVert || col > sizeHoriz){
         std::cerr << "Error: Out of bounds\n";
         //throw OUT_OF_BOUNDS_EXCEPTION;
+    }
+}
+
+int RNG(int i){ return rand() % i; } // TODO: Check if this is truly random
+
+void Board::makeRandomBoard(){
+    unsigned boardSize = sizeVert * sizeHoriz;
+    std::vector<unsigned> mineLocations(boardSize);
+    for(unsigned i = 0; i < boardSize ; i++){
+        mineLocations[i] = i;
+    }
+    std::random_shuffle(mineLocations.begin(), mineLocations.end(), RNG);
+    mineLocations.resize(startMines);
+    std::sort(mineLocations.begin(), mineLocations.end());
+    for(unsigned i = 0 ; i < mineLocations.size() ; i++)
+        std::cout << mineLocations[i] << " ";
+    std::cout << "\n";
+
+    for(unsigned i = 0 ; i < mineLocations.size() ; i++){
+        unsigned row = mineLocations[i] / sizeHoriz;
+        unsigned col = mineLocations[i] % sizeHoriz;
+        theBoard[row][col].setMine(true);
     }
 }

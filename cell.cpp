@@ -1,6 +1,8 @@
 #include <assert.h>
 #include "cell.h"
 
+#define BOARDVIS 1
+
 const char UNOPENED_GFX = '?';
 const char FLAGGED_GFX  = 'x';
 const char MINE_GFX     = '*';
@@ -54,6 +56,9 @@ void Cell::open(){
 }
 
 char Cell::getDisplay(){
+#if BOARDVIS 
+    return mine ? MINE_GFX : contents;
+#endif
     switch(curStatus){
         case OPEN:    return contents;
         case CLOSED:  return UNOPENED_GFX;
