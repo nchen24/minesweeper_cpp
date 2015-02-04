@@ -4,13 +4,29 @@
 #include "game.h"
         
 Game::Game(){
-    srand(time(0));
-    theBoard = new Board(10, 10, 15, 0);
+    this->seed = time(0);
+    init();
 }
 
-Game::Game(const unsigned seed){
+Game::Game(unsigned seed){
+    this->seed = seed;
+    init();
+}
+
+void Game::remake(){
+    std::cout << "Remaking...\n";
+    delete theBoard;
+    seed = rand();
+    init();
+}
+
+void Game::init(){
+    boardCols = 10;
+    boardRows = 10;
+    numMines  = 15;
     srand(seed);
-    theBoard = new Board(10, 10, 15, 0);
+    theBoard = new Board(boardCols, boardRows, numMines, seed);
+    turnNum = 0;
 }
 
 int Game::play(){
@@ -22,8 +38,23 @@ int Game::play(){
         theBoard->printBoard();
         currentPlay = getInput();
         gameOver = theBoard->openCell(currentPlay);
+        if(turnNum == 0){
+            while(gameOver){
+                remake();
+                gameOver = theBoard->openCell(currentPlay);
+            }
+        }
+        turnNum++;
+    }
+    if(gameOver){
+        showGameOver();
     }
     return 0;
+}
+
+void Game::showGameOver(){
+    theBoard->printBoard();
+    std::cout << "Game over, you lose!\n";
 }
 
 BoardCoordinates Game::getInput(){

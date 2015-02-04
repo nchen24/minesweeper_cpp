@@ -3,7 +3,7 @@
 #include "board.h"
 
 int main(){
-    Game g(10);
+    Game g;
     g.play();
     //Board f(15, 15, 5, 0);
     //f.printBoard();
