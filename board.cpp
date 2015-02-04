@@ -28,7 +28,8 @@ Board::Board(const unsigned sizeHoriz, const unsigned sizeVert, const unsigned n
             theBoard[row][col].setNeighbors(0);
         }
     }
-    makeRandomBoard(); 
+    makeBoard();
+    setNeighbors();
     std::cout << "Made board " << this->sizeVert << "x" << this->sizeHoriz << "\n";
 }
 
@@ -87,11 +88,23 @@ void Board::printBoard(){
     std::cout << "\n";
 }
 
-void Board::validateInput(const unsigned row, const unsigned col){
-    if(row > sizeVert || col > sizeHoriz){
+bool Board::isValidPlace(int row, int col){
+    if(row < 0 || row >= sizeVert)
+        return false;
+    if(col < 0 || col >= sizeHoriz)
+        return false;
+    return true;
+}
+
+void Board::validateInput(int row, int col){
+    if(!isValidPlace(row, col)){
         std::cerr << "Error: Out of bounds\n";
         //throw OUT_OF_BOUNDS_EXCEPTION;
     }
+}
+
+void Board::makeBoard(){
+    makeRandomBoard();
 }
 
 int RNG(int i){ return rand() % i; } // TODO: Check if this is truly random
@@ -114,4 +127,29 @@ void Board::makeRandomBoard(){
         unsigned col = mineLocations[i] % sizeHoriz;
         theBoard[row][col].setMine(true);
     }
+}
+
+void Board::setNeighbors(){
+    for(unsigned row = 0 ; row < sizeVert ; row++){
+        for(unsigned col = 0 ; col < sizeHoriz ; col++){
+            theBoard[row][col].setNeighbors(getNumNeighbors(row, col));
+        }
+    }
+}
+
+unsigned Board::getNumNeighbors(unsigned row, unsigned col){
+    unsigned neighbors = 0;
+    unsigned neighborRow;
+    unsigned neighborCol;
+
+    for(int i = -1 ; i <= 1 ; i++){
+        for(int j = -1 ; j <= 1 ; j++){
+            neighborRow = row + i;
+            neighborCol = col + j;
+            if(isValidPlace(neighborRow, neighborCol) && theBoard[neighborRow][neighborCol].isMine()){
+                neighbors++;
+            }
+        }
+    }
+    return neighbors;
 }

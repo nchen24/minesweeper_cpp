@@ -23,7 +23,9 @@ class Board{
     private:
         Cell **theBoard;
 
+        void makeBoard();
         void makeRandomBoard();
+        void setNeighbors();
 
         unsigned sizeVert;
         unsigned sizeHoriz;
@@ -32,7 +34,9 @@ class Board{
 
 
         // Helper functions
-        void validateInput(const unsigned row, const unsigned col);
+        bool isValidPlace(int row, int col);
+        void validateInput(int row, int col);
+        unsigned getNumNeighbors(unsigned row, unsigned col);
 };
 
 #endif
