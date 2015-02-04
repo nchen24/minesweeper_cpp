@@ -6,13 +6,22 @@
 class Game{
     public:
         Game();
-        Game(const unsigned seed);
+        Game(unsigned seed);
 
         int play();
     private:
+        unsigned seed;
+        unsigned boardCols;
+        unsigned boardRows;
+        unsigned numMines;
         Board *theBoard;
+        unsigned turnNum;
+
+        void remake();
+        void init();
 
         BoardCoordinates getInput();
+        void showGameOver();
 
 };
 #endif

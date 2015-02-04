@@ -1,7 +1,7 @@
 #include <assert.h>
 #include "cell.h"
 
-#define BOARDVIS 1
+#define BOARDVIS 0
 
 const char UNOPENED_GFX = '?';
 const char FLAGGED_GFX  = 'x';
