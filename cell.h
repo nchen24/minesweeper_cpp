@@ -4,7 +4,7 @@
 const char UNOPENED_GFX = '?';
 const char FLAGGED_GFX  = 'x';
 const char MINE_GFX     = '*';
-const char EMPTY_GFX    = '0';
+const char NUM_GFX[] = {' ', '1', '2', '3', '4', '5', '6', '7', '8'};
 
 class Cell{
     enum STATUS {OPEN, CLOSED, FLAGGED};
