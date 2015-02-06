@@ -5,12 +5,32 @@
 #include "game.h"
         
 Game::Game(){
-    this->seed = time(0);
+    this->seed      = time(0);
+    this->boardCols = 10;
+    this->boardRows = 10;
+    this->numMines  = 15;
     init();
 }
 
 Game::Game(unsigned seed){
-    this->seed = seed;
+    this->seed      = seed;
+    this->boardCols = 10;
+    this->boardRows = 10;
+    this->numMines  = 15;
+    init();
+}
+Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines){
+    this->seed      = time(0);
+    this->boardCols = sizeH;
+    this->boardRows = sizeV;
+    this->numMines  = mines;
+    init();
+}
+Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed){
+    this->seed      = seed;
+    this->boardCols = sizeH;
+    this->boardRows = sizeV;
+    this->numMines  = mines;
     init();
 }
 
@@ -22,9 +42,6 @@ void Game::remake(){
 }
 
 void Game::init(){
-    boardCols = 10;
-    boardRows = 10;
-    numMines  = 15;
     srand(seed);
     theBoard = new Board(boardCols, boardRows, numMines, seed);
     turnNum = 0;
