@@ -8,6 +8,8 @@ class Game{
     public:
         Game();
         Game(unsigned seed);
+        Game(unsigned sizeH, unsigned sizeV, unsigned mines);
+        Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed);
 
         int play();
     private:

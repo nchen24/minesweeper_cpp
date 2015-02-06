@@ -22,9 +22,7 @@ void Cell::setMine(bool isAMine){
 }
 
 void Cell::setNeighbors(unsigned neighbors){
-    this->contents = (this->mine ? MINE_GFX : neighbors + '0');
-    if(this->contents == '0')
-        this-> contents = EMPTY_GFX;
+    this->contents = (this->mine ? MINE_GFX : NUM_GFX[neighbors]);
     neighborsSet = true;
 }
 

@@ -66,7 +66,7 @@ bool Board::openCell(BoardCoordinates play){
         col = curCell.column - (unsigned)'a';
         if(!theBoard[row][col].isOpen()){
             theBoard[row][col].open();
-            if(theBoard[row][col].getDisplay() == EMPTY_GFX){
+            if(theBoard[row][col].getDisplay() == NUM_GFX[0]){
                 // Add neighbors
                 addNeighbors(row, col, cellsToOpen);
             }
