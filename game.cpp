@@ -34,6 +34,10 @@ Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed){
     init();
 }
 
+Game::~Game(){
+    delete theBoard;
+}
+
 void Game::remake(){
     std::cout << "Remaking...\n";
     delete theBoard;
