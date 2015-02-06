@@ -11,6 +11,8 @@ class Game{
         Game(unsigned sizeH, unsigned sizeV, unsigned mines);
         Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed);
 
+        ~Game();
+
         int play();
     private:
         unsigned seed;
