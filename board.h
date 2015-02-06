@@ -2,6 +2,7 @@
 #define BOARD_H_DEFINED
 
 #include <vector>
+#include <stack>
 #include "cell.h"
 
 enum CELL_STATE{OPEN, CLOSED};
@@ -20,6 +21,8 @@ class Board{
         bool openCell(BoardCoordinates play); 
         void flagCell(const char x, const int y);
         void printBoard();
+        void showWholeBoard();
+        unsigned countUnopened();
     private:
         Cell **theBoard;
 
@@ -37,6 +40,8 @@ class Board{
         bool isValidPlace(int row, int col);
         void validateInput(int row, int col);
         unsigned getNumNeighbors(unsigned row, unsigned col);
+        void addNeighbors(int row, int col, std::stack<BoardCoordinates> &cellsToOpen);
 };
 
 #endif
+

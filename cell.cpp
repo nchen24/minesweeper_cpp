@@ -3,9 +3,6 @@
 
 #define BOARDVIS 0
 
-const char UNOPENED_GFX = '?';
-const char FLAGGED_GFX  = 'x';
-const char MINE_GFX     = '*';
 
 Cell::Cell(){
     curStatus = CLOSED;
@@ -26,6 +23,8 @@ void Cell::setMine(bool isAMine){
 
 void Cell::setNeighbors(unsigned neighbors){
     this->contents = (this->mine ? MINE_GFX : neighbors + '0');
+    if(this->contents == '0')
+        this-> contents = EMPTY_GFX;
     neighborsSet = true;
 }
 

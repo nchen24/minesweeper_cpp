@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctype.h>
 #include <cstdlib>
+#include <stdexcept>
 #include "game.h"
         
 Game::Game(){
@@ -37,7 +38,11 @@ int Game::play(){
     while(!gameOver){
         theBoard->printBoard();
         currentPlay = getInput();
-        gameOver = theBoard->openCell(currentPlay);
+        try{
+            gameOver = theBoard->openCell(currentPlay);
+        } catch(const std::out_of_range& e){
+
+        }
         if(turnNum == 0){
             while(gameOver){
                 remake();
@@ -45,6 +50,10 @@ int Game::play(){
             }
         }
         turnNum++;
+        if(theBoard->countUnopened() == numMines){
+            showWin();
+            break;
+        }
     }
     if(gameOver){
         showGameOver();
@@ -53,8 +62,15 @@ int Game::play(){
 }
 
 void Game::showGameOver(){
+    theBoard->showWholeBoard();
     theBoard->printBoard();
     std::cout << "Game over, you lose!\n";
+}
+
+void Game::showWin(){
+    theBoard->showWholeBoard();
+    theBoard->printBoard();
+    std::cout << "Congratulations, you win!\n";
 }
 
 BoardCoordinates Game::getInput(){

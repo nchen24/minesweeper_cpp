@@ -1,6 +1,11 @@
 #ifndef CELL_H_DEFINED
 #define CELL_H_DEFINED
 
+const char UNOPENED_GFX = '?';
+const char FLAGGED_GFX  = 'x';
+const char MINE_GFX     = '*';
+const char EMPTY_GFX    = '0';
+
 class Cell{
     enum STATUS {OPEN, CLOSED, FLAGGED};
 

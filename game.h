@@ -22,6 +22,7 @@ class Game{
 
         BoardCoordinates getInput();
         void showGameOver();
+        void showWin();
 
 };
 #endif
