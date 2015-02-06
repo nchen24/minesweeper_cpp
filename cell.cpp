@@ -36,9 +36,9 @@ bool Cell::isMine(){
 
 bool Cell::canBeOpened(){
     switch(curStatus){
-        case OPEN:      return false;
-        case CLOSED:    return true;
-        case FLAGGED:   return false;
+        case OPEN:    return false;
+        case CLOSED:  return true;
+        case FLAGGED: return false;
     }
 }
 
