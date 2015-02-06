@@ -19,7 +19,7 @@ class Board{
         ~Board();
 
         bool openCell(BoardCoordinates play); 
-        void flagCell(const char x, const int y);
+        void flagCell(BoardCoordinates play);
         void printBoard();
         void showWholeBoard();
         unsigned countUnopened();

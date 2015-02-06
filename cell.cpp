@@ -37,7 +37,11 @@ bool Cell::isMine(){
 }
 
 bool Cell::canBeOpened(){
-    return curStatus == CLOSED ? true : false;
+    switch(curStatus){
+        case OPEN:      return false;
+        case CLOSED:    return true;
+        case FLAGGED:   return false;
+    }
 }
 
 bool Cell::isOpen(){
@@ -46,6 +50,7 @@ bool Cell::isOpen(){
 
 void Cell::flag(){
     curStatus = (curStatus == CLOSED ? FLAGGED : CLOSED);
+    this->contents = FLAGGED_GFX;
 }
 
 void Cell::open(){

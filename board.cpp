@@ -49,6 +49,9 @@ bool Board::openCell(BoardCoordinates play){
     unsigned col = play.column - (unsigned)'a';
     validateInput(row, col); //TODO: Reimplement this somewhere?
 
+    if(!theBoard[row][col].canBeOpened())
+        return false;
+
     if(theBoard[row][col].isMine()){
         theBoard[row][col].open();
         return true;
@@ -88,9 +91,9 @@ void Board::addNeighbors(int row, int col, std::stack<BoardCoordinates> &cellsTo
 
 }
 
-void Board::flagCell(const char x, const int y){
-    const unsigned row = y;
-    const unsigned col = x - 'a';
+void Board::flagCell(BoardCoordinates play){
+    unsigned row = play.row;
+    unsigned col = play.column - (unsigned)'a';
     validateInput(row, col);
 
     theBoard[row][col].flag(); 
