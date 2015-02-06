@@ -3,6 +3,7 @@
 
 #include "board.h"
 
+enum BOARD_ACTION{A_OPEN, A_FLAG};
 class Game{
     public:
         Game();
@@ -21,7 +22,9 @@ class Game{
         void init();
 
         BoardCoordinates getInput();
+        BOARD_ACTION getActionInput();
         void showGameOver();
+        void showWin();
 
 };
 #endif

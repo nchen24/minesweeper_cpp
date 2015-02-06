@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctype.h>
 #include <cstdlib>
+#include <stdexcept>
 #include "game.h"
         
 Game::Game(){
@@ -33,18 +34,33 @@ int Game::play(){
     bool gameOver = false;
     std::string input = "";
     BoardCoordinates currentPlay;
+    BOARD_ACTION action;
 
     while(!gameOver){
         theBoard->printBoard();
         currentPlay = getInput();
-        gameOver = theBoard->openCell(currentPlay);
-        if(turnNum == 0){
-            while(gameOver){
-                remake();
+        action = getActionInput();
+        try{
+            if(action == A_OPEN){
                 gameOver = theBoard->openCell(currentPlay);
+                
+                if(turnNum == 0){
+                    while(gameOver){
+                        remake();
+                        gameOver = theBoard->openCell(currentPlay);
+                    }
+                }
+            } else {
+                theBoard->flagCell(currentPlay);
             }
+        } catch(const std::out_of_range& e){
+
         }
         turnNum++;
+        if(theBoard->countUnopened() == numMines){
+            showWin();
+            break;
+        }
     }
     if(gameOver){
         showGameOver();
@@ -53,8 +69,15 @@ int Game::play(){
 }
 
 void Game::showGameOver(){
+    theBoard->showWholeBoard();
     theBoard->printBoard();
     std::cout << "Game over, you lose!\n";
+}
+
+void Game::showWin(){
+    theBoard->showWholeBoard();
+    theBoard->printBoard();
+    std::cout << "Congratulations, you win!\n";
 }
 
 BoardCoordinates Game::getInput(){
@@ -66,4 +89,13 @@ BoardCoordinates Game::getInput(){
     } while(sscanf(input.c_str(), "%c%u", &currentPlay.column, &currentPlay.row) != 2);
 
     return currentPlay;
+}
+
+BOARD_ACTION Game::getActionInput(){
+    std::string input = "";
+    do{
+        std::cin >> input;
+    } while(input != "o" && input != "x");
+
+    return input == "o" ? A_OPEN : A_FLAG;
 }

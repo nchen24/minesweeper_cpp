@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
+#include <stdexcept>
 #include <time.h>
 #include "board.h"
 
@@ -42,23 +43,57 @@ Board::~Board(){
 
 bool Board::openCell(BoardCoordinates play){
     // Returns true if the player blew up, else returns false.
+    std::stack<BoardCoordinates> cellsToOpen;
+
     unsigned row = play.row;
     unsigned col = play.column - (unsigned)'a';
-    validateInput(row, col);
-    //if(!validateInput(row, col))
-    //    return false;
-    
+    validateInput(row, col); //TODO: Reimplement this somewhere?
+
     if(!theBoard[row][col].canBeOpened())
         return false;
 
-    theBoard[row][col].open();
+    if(theBoard[row][col].isMine()){
+        theBoard[row][col].open();
+        return true;
+    }
 
-    return theBoard[row][col].isMine();
+    cellsToOpen.push(play);
+
+    while(!cellsToOpen.empty()){
+        BoardCoordinates curCell = cellsToOpen.top();
+        cellsToOpen.pop();
+        row = curCell.row;
+        col = curCell.column - (unsigned)'a';
+        if(!theBoard[row][col].isOpen()){
+            theBoard[row][col].open();
+            if(theBoard[row][col].getDisplay() == EMPTY_GFX){
+                // Add neighbors
+                addNeighbors(row, col, cellsToOpen);
+            }
+        }
+    }
+    return false;
 }
 
-void Board::flagCell(const char x, const int y){
-    const unsigned row = y;
-    const unsigned col = x - 'a';
+void Board::addNeighbors(int row, int col, std::stack<BoardCoordinates> &cellsToOpen){
+    for(int i = -1 ; i <= 1 ; i++){
+        for(int j = -1 ; j <= 1 ; j++){
+            int newRow = row + i;
+            int newCol = col + j;
+            if((i || j) && isValidPlace(newRow, newCol)){
+                BoardCoordinates newCoords;
+                newCoords.row = newRow;
+                newCoords.column = newCol + (unsigned) 'a';
+                cellsToOpen.push(newCoords);
+            }
+        }
+    }
+
+}
+
+void Board::flagCell(BoardCoordinates play){
+    unsigned row = play.row;
+    unsigned col = play.column - (unsigned)'a';
     validateInput(row, col);
 
     theBoard[row][col].flag(); 
@@ -78,7 +113,7 @@ void Board::printBoard(){
             std::cout << " ";
         }
         std::cout << row << " ";
-        
+
         // Print the actual board
         for(unsigned col = 0 ; col < sizeHoriz ; col++){
             std::cout << theBoard[row][col].getDisplay() << " ";
@@ -88,10 +123,26 @@ void Board::printBoard(){
     std::cout << "\n";
 }
 
+void Board::showWholeBoard(){
+    for(unsigned row = 0 ; row < sizeVert ; row++){
+        for(unsigned col = 0 ; col < sizeHoriz ; col++){
+            theBoard[row][col].open();
+        }
+    }
+}
+unsigned Board::countUnopened(){
+    unsigned unopened = 0;
+    for(unsigned row = 0 ; row < sizeVert ; row++)
+        for(unsigned col = 0 ; col < sizeHoriz ; col++)
+            if(!theBoard[row][col].isOpen())
+                unopened++;
+    return unopened;
+}
+
 bool Board::isValidPlace(int row, int col){
-    if(row < 0 || row >= sizeVert)
+    if(row < 0 || (unsigned)row >= sizeVert)
         return false;
-    if(col < 0 || col >= sizeHoriz)
+    if(col < 0 || (unsigned)col >= sizeHoriz)
         return false;
     return true;
 }
@@ -99,7 +150,7 @@ bool Board::isValidPlace(int row, int col){
 void Board::validateInput(int row, int col){
     if(!isValidPlace(row, col)){
         std::cerr << "Error: Out of bounds\n";
-        //throw OUT_OF_BOUNDS_EXCEPTION;
+        throw std::out_of_range("Out of bounds\n");
     }
 }
 
