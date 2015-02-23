@@ -15,11 +15,23 @@ int main(){
         std::cin >> input;
         if(input.length() == 1)
             difficulty = input[0];
+        difficulty = toupper(difficulty);
         switch(difficulty){
             case 'B': g = new Game(9, 9, 10); break;
             case 'I': g = new Game(16, 16, 40); break;
             case 'E': g = new Game(16, 30, 99); break;
-            case 'C': std::cout << "Custom currently not supported\n"; break;
+            case 'C':
+                unsigned rows, cols, mines;
+                std::cout << "Please enter the board size, in the following format: Rows,Cols,#Mines\n";
+                do{
+                    std::cin >> input;
+                } while(sscanf(input.c_str(), "%u,%u,%u", &rows, &cols, &mines) != 3);
+                try{
+                    g = new Game(cols, rows, mines);
+                }catch(const std::out_of_range& e){
+                    std::cerr << "Number of mines exceeded board dimensions\n";
+                }
+                break;
             default: std::cout << "Invalid option\n";
         }
 
@@ -30,4 +42,3 @@ int main(){
     delete g;
     return 0;
 }
-

@@ -24,6 +24,7 @@ Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines){
     this->boardCols = sizeH;
     this->boardRows = sizeV;
     this->numMines  = mines;
+    checkValidNumMines(sizeH, sizeV, mines);
     init();
 }
 Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed){
@@ -31,6 +32,7 @@ Game::Game(unsigned sizeH, unsigned sizeV, unsigned mines, unsigned seed){
     this->boardCols = sizeH;
     this->boardRows = sizeV;
     this->numMines  = mines;
+    checkValidNumMines(sizeH, sizeV, mines);
     init();
 }
 
@@ -119,4 +121,9 @@ BOARD_ACTION Game::getActionInput(){
     } while(input != "o" && input != "x");
 
     return input == "o" ? A_OPEN : A_FLAG;
+}
+
+void Game::checkValidNumMines(unsigned rows, unsigned cols, unsigned mines){
+    if(mines > rows * cols)
+        throw std::out_of_range("Too many mines\n");
 }

@@ -29,6 +29,7 @@ class Game{
         BOARD_ACTION getActionInput();
         void showGameOver();
         void showWin();
+        void checkValidNumMines(unsigned rows, unsigned cols, unsigned mines);
 
 };
 #endif
